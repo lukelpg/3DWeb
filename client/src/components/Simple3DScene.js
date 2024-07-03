@@ -5,6 +5,9 @@ const Simple3DScene = () => {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    let mouseX = 0;
+    let mouseY = 0;
+
     // Scene
     const scene = new THREE.Scene();
 
@@ -23,11 +26,23 @@ const Simple3DScene = () => {
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
+    // Mouse move event listener
+    const handleMouseMove = (event) => {
+      // Normalize mouse position to [-1, 1] range
+      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+
     // Animation Loop
     const animate = () => {
       requestAnimationFrame(animate);
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
+
+      // Move cube based on mouse position
+      cube.rotation.x = mouseY * 0.5;
+      cube.rotation.y = mouseX * 0.5;
+
       renderer.render(scene, camera);
     };
 
@@ -35,6 +50,7 @@ const Simple3DScene = () => {
 
     // Cleanup
     return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
       renderer.dispose();
       scene.remove(cube);
     };
