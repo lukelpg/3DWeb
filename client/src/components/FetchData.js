@@ -17,7 +17,7 @@ function FetchData() {
 
   return (
     <div>
-      <h2>Fetch Data </h2>
+      <h2>Fetch Data Check</h2>
       <p>Check console for messages from backend.</p>
     </div>
   );
