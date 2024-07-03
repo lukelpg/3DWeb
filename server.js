@@ -13,6 +13,19 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
+
+
+// Example route to log messages from backend to frontend
+app.get('/log-to-frontend', (req, res) => {
+  // Message to send to frontend
+  const message = 'Hello from backend!';
+
+  // Send message as JSON response
+  res.json({ message });
+});
+
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

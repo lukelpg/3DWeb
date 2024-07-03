@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css'; // Optional CSS file for styling
 
 import Simple3DScene from './components/Simple3DScene'; // Adjust the path as per your directory structure
+import FetchData from './components/FetchData';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       </header>
       <main>
         <Simple3DScene />
+        <FetchData />
       </main>
     </div>
   );
