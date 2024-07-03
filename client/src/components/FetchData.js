@@ -8,7 +8,7 @@ function FetchData() {
     fetch('/log-to-frontend')
       .then(res => res.json())
       .then(data => {
-        console.log('Message from backend:', data.message);
+        console.log(data.message);
       })
       .catch(error => {
         console.error('Error fetching message from backend:', error);

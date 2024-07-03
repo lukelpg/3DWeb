@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 // Example route to log messages from backend to frontend
 app.get('/log-to-frontend', (req, res) => {
   // Message to send to frontend
-  const message = 'Hello from backend!';
+  const message = 'Backend Connected.';
 
   // Send message as JSON response
   res.json({ message });
