@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+
 const Simple3DScene = () => {
   const containerRef = useRef(null);
   const isMouseDown = useRef(false); // Ref to track mouse button state
@@ -13,20 +16,41 @@ const Simple3DScene = () => {
     const scene = new THREE.Scene();
 
     // Camera
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500);
+    // camera.position.set( 0, 0, 100 );
+    // camera.lookAt( 0, 0, 0 );
+
 
     // Renderer
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     containerRef.current.appendChild(renderer.domElement);
 
+
+    const loader = new GLTFLoader();
+
+    loader.load( './components/models/free_1975_porsche_911_930_turbo.glb', function ( gltf ) {
+
+      scene.add( gltf.scene );
+
+    }, undefined, function ( error ) {
+
+      console.error( error );
+
+    } );
+
+
     // Cube
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
+    const cubeGeometry = new THREE.BoxGeometry();
+    const cubeMaterial = new THREE.MeshBasicMaterial({ 
+      color: 0xC0C0C0
+    });
+    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     scene.add(cube);
 
+    //Position camera
+    camera.position.z = 2;
+    
     // Mouse move event listener
     const handleMouseMove = (event) => {
       // Normalize mouse position to [-1, 1] range
