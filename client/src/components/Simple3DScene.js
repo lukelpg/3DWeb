@@ -18,6 +18,9 @@ const Simple3DScene = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000); // for clearing screen to black before use
     renderer.setPixelRatio(window.devicePixelRatio); // for appropeiate rendering on different devices
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // softer shadows
+
     containerRef.current.appendChild(renderer.domElement); // adds renderer to html document
 
     // Scene
