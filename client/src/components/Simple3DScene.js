@@ -104,20 +104,17 @@ const Simple3DScene = () => {
 
 
     // Cube
-    const cubeGeometry = new THREE.BoxGeometry();
+    const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
     const cubeMaterial = new THREE.MeshBasicMaterial({ 
       color: 0xC0C0C0
     });
     const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-    // cube.position.z = 3; 
+    cube.castShadow = true;
+    cube.receiveShadow = true;
     cube.position.set(0, 3, -3);
 
     scene.add(cube);
 
-   
-
-    //Position camera
-    // camera.position.z = 2;
     
     // Mouse move event listener
     const handleMouseMove = (event) => {
