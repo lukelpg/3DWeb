@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-// import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const Simple3DScene = () => {
   const containerRef = useRef(null);
@@ -90,17 +90,13 @@ const Simple3DScene = () => {
 
 
     // Loading model
-    // const loader = new GLTFLoader();
-
-    // loader.load( 'free_1975_porsche_911_930_turbo.glb', function ( gltf ) {
-
-    //   scene.add( gltf.scene );
-
-    // }, undefined, function ( error ) {
-
-    //   console.error( error );
-
-    // } );
+    const loader = new GLTFLoader().setPath('3DWeb/client/public/models/free_1975_porsche_911_930_turbo');
+    loader.load( 'scene.gltf', (gltf) => {
+      const mesh = gltf.scene;
+      mesh.position.set(0, 1.05, -1);
+      scene.add(mesh);
+    });
+    console.log(window.location.origin);
 
 
     // Cube
@@ -112,34 +108,44 @@ const Simple3DScene = () => {
     cube.castShadow = true;
     cube.receiveShadow = true;
     cube.position.set(0, 3, -3);
-
     scene.add(cube);
+
+
+
+
+
+    // Set up OrbitControls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enablePan = true; // Enable panning (middle click and drag)
+    controls.update(); // Initial update of controls
+
+
 
     
     // Mouse move event listener
-    const handleMouseMove = (event) => {
-      // Normalize mouse position to [-1, 1] range
-      mouseX = (event.clientX / window.innerWidth) * 3 - 1;
-      mouseY = (event.clientY / window.innerHeight) * 3 + 1;
+    // const handleMouseMove = (event) => {
+    //   // Normalize mouse position to [-1, 1] range
+    //   mouseX = (event.clientX / window.innerWidth) * 3 - 1;
+    //   mouseY = (event.clientY / window.innerHeight) * 3 + 1;
 
-      if (isMouseDown.current) {
-        // Move cube based on mouse position only when mouse button is down
-        cube.rotation.x = mouseY * 0.75;
-        cube.rotation.y = mouseX * 0.75;
-      }
-    };
+    //   if (isMouseDown.current) {
+    //     // Move cube based on mouse position only when mouse button is down
+    //     cube.rotation.x = mouseY * 0.75;
+    //     cube.rotation.y = mouseX * 0.75;
+    //   }
+    // };
 
-    const handleMouseDown = () => {
-      isMouseDown.current = true;
-    };
+    // const handleMouseDown = () => {
+    //   isMouseDown.current = true;
+    // };
 
-    const handleMouseUp = () => {
-      isMouseDown.current = false;
-    };
+    // const handleMouseUp = () => {
+    //   isMouseDown.current = false;
+    // };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
+    // window.addEventListener('mousemove', handleMouseMove);
+    // window.addEventListener('mousedown', handleMouseDown);
+    // window.addEventListener('mouseup', handleMouseUp);
 
     // Animation Loop
     const animate = () => {
@@ -151,9 +157,9 @@ const Simple3DScene = () => {
 
     // Cleanup
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
+      // window.removeEventListener('mousemove', handleMouseMove);
+      // window.removeEventListener('mousedown', handleMouseDown);
+      // window.removeEventListener('mouseup', handleMouseUp);
       renderer.dispose();
       scene.remove(cube);
     };
