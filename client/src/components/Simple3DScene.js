@@ -44,7 +44,7 @@ const Simple3DScene = () => {
     scene.add(groundMesh);
 
     // Add sun light from above (spotlight)
-    const spotlight = new THREE.SpotLight(0xffffff, 30, 100, 0.2, 0.5);
+    const spotlight = new THREE.SpotLight(0xffffff, 1000, 100, 0.2, 0.5);
     spotlight.position.set(0, 25, 0);
     scene.add(spotlight);
 
@@ -90,25 +90,24 @@ const Simple3DScene = () => {
 
 
     // Loading model
-    const loader = new GLTFLoader().setPath('3DWeb/client/public/models/free_1975_porsche_911_930_turbo');
+    const loader = new GLTFLoader().setPath('/models/free_1975_porsche_911_930_turbo/');
     loader.load( 'scene.gltf', (gltf) => {
       const mesh = gltf.scene;
-      mesh.position.set(0, 1.05, -1);
+      mesh.position.set(0, 0, 0);
       scene.add(mesh);
     });
-    console.log(window.location.origin);
 
 
     // Cube
-    const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-    const cubeMaterial = new THREE.MeshBasicMaterial({ 
-      color: 0xC0C0C0
-    });
-    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-    cube.castShadow = true;
-    cube.receiveShadow = true;
-    cube.position.set(0, 3, -3);
-    scene.add(cube);
+    // const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+    // const cubeMaterial = new THREE.MeshBasicMaterial({ 
+    //   color: 0xC0C0C0
+    // });
+    // const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    // cube.castShadow = true;
+    // cube.receiveShadow = true;
+    // cube.position.set(0, 3, -3);
+    // scene.add(cube);
 
 
 
@@ -161,7 +160,7 @@ const Simple3DScene = () => {
       // window.removeEventListener('mousedown', handleMouseDown);
       // window.removeEventListener('mouseup', handleMouseUp);
       renderer.dispose();
-      scene.remove(cube);
+      // scene.remove(cube);
     };
   }, []);
 
