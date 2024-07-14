@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+// import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 
 const Simple3DScene = () => {
@@ -9,35 +9,65 @@ const Simple3DScene = () => {
   const isMouseDown = useRef(false); // Ref to track mouse button state
 
   useEffect(() => {
+    // Set mouse useable mouse position to zero
     let mouseX = 0;
     let mouseY = 0;
+
+    // Renderer
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000); // for clearing screen to black before use
+    renderer.setPixelRatio(window.devicePixelRatio); // for appropeiate rendering on different devices
+    containerRef.current.appendChild(renderer.domElement); // adds renderer to html document
 
     // Scene
     const scene = new THREE.Scene();
 
     // Camera
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500);
-    // camera.position.set( 0, 0, 100 );
-    // camera.lookAt( 0, 0, 0 );
+    camera.position.set( 4, 5, 11 );
+    camera.lookAt( 0, 0, 0 );
 
 
-    // Renderer
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    containerRef.current.appendChild(renderer.domElement);
 
+    // Add ground
+    const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
+    groundGeometry.rotateX(-Math.PI / 2);
+    const groundMaterial = new THREE.MeshStandardMaterial({
+      color: 0x555555,
+      side: THREE.DoubleSide
+    });
+    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+    scene.add(groundMesh);
 
-    const loader = new GLTFLoader();
+    // Add sun light from above (spotlight)
+    const spotlight = new THREE.SpotLight(0xffffff, 3, 100, 0.2, 0.5);
+    spotlight.position.set(0, 25, 0);
+    scene.add(spotlight);
 
-    loader.load( './components/models/free_1975_porsche_911_930_turbo.glb', function ( gltf ) {
+    spotlight.castShadow = true;
+    spotlight.shadow.mapSize.width = 1024;
+    spotlight.shadow.mapSize.height = 1024;
+    spotlight.shadow.camera.near = 0.5;
+    spotlight.shadow.camera.far = 500;
 
-      scene.add( gltf.scene );
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Soft white light
+    scene.add(ambientLight);
 
-    }, undefined, function ( error ) {
+    
 
-      console.error( error );
+    // Loading model
+    // const loader = new GLTFLoader();
 
-    } );
+    // loader.load( 'free_1975_porsche_911_930_turbo.glb', function ( gltf ) {
+
+    //   scene.add( gltf.scene );
+
+    // }, undefined, function ( error ) {
+
+    //   console.error( error );
+
+    // } );
 
 
     // Cube
@@ -46,10 +76,13 @@ const Simple3DScene = () => {
       color: 0xC0C0C0
     });
     const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    // cube.position.z = 3; 
     scene.add(cube);
 
+   
+
     //Position camera
-    camera.position.z = 2;
+    // camera.position.z = 2;
     
     // Mouse move event listener
     const handleMouseMove = (event) => {
@@ -79,7 +112,6 @@ const Simple3DScene = () => {
     // Animation Loop
     const animate = () => {
       requestAnimationFrame(animate);
-
       renderer.render(scene, camera);
     };
 
