@@ -56,6 +56,36 @@ const Simple3DScene = () => {
 
     
 
+
+    // Create a coordinate frame (axes) at the origin
+    function createAxes() {
+      // X axis (red)
+      const xAxisMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+      const xAxisGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0) ] );
+      const xAxis = new THREE.Line(xAxisGeometry, xAxisMaterial);
+      scene.add(xAxis);
+
+      // Y axis (green)
+      const yAxisMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+      const yAxisGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0) ] );
+      const yAxis = new THREE.Line(yAxisGeometry, yAxisMaterial);
+      scene.add(yAxis);
+
+      // Z axis (blue)
+      const zAxisMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
+      const zAxisGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 1) ] );
+      const zAxis = new THREE.Line(zAxisGeometry, zAxisMaterial);
+      scene.add(zAxis);
+    }
+
+    // Call function to create coordinate frame
+    createAxes();
+
+
+
+
+
+
     // Loading model
     // const loader = new GLTFLoader();
 
@@ -77,6 +107,8 @@ const Simple3DScene = () => {
     });
     const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     // cube.position.z = 3; 
+    cube.position.set(0, 3, -3);
+
     scene.add(cube);
 
    
