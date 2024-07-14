@@ -6,12 +6,12 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const Simple3DScene = () => {
   const containerRef = useRef(null);
-  const isMouseDown = useRef(false); // Ref to track mouse button state
+  // const isMouseDown = useRef(false); // Ref to track mouse button state
 
   useEffect(() => {
     // Set mouse useable mouse position to zero
-    let mouseX = 0;
-    let mouseY = 0;
+    // let mouseX = 0;
+    // let mouseY = 0;
 
     // Renderer
     const renderer = new THREE.WebGLRenderer();
