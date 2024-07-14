@@ -34,14 +34,14 @@ const Simple3DScene = () => {
     const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
     groundGeometry.rotateX(-Math.PI / 2);
     const groundMaterial = new THREE.MeshStandardMaterial({
-      color: 0x555555,
+      color: 0xffffff,
       side: THREE.DoubleSide
     });
     const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
     scene.add(groundMesh);
 
     // Add sun light from above (spotlight)
-    const spotlight = new THREE.SpotLight(0xffffff, 3, 100, 0.2, 0.5);
+    const spotlight = new THREE.SpotLight(0xffffff, 30, 100, 0.2, 0.5);
     spotlight.position.set(0, 25, 0);
     scene.add(spotlight);
 
@@ -51,8 +51,8 @@ const Simple3DScene = () => {
     spotlight.shadow.camera.near = 0.5;
     spotlight.shadow.camera.far = 500;
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Soft white light
-    scene.add(ambientLight);
+    // const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Soft white light
+    // scene.add(ambientLight);
 
     
 
