@@ -44,7 +44,7 @@ const Simple3DScene = () => {
     scene.add(groundMesh);
 
     // Add sun light from above (spotlight)
-    const spotlight = new THREE.SpotLight(0xffffff, 1000, 100, 0.2, 0.5);
+    const spotlight = new THREE.SpotLight(0xffffff, 10000, 100, 0.2, 0.5);
     spotlight.position.set(0, 25, 0);
     scene.add(spotlight);
 
