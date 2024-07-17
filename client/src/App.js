@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css'; // Optional CSS file for styling
 
 import Simple3DScene from './components/Simple3DScene'; // Adjust the path as per your directory structure
-import FetchData from './components/FetchData';
+import FetchData from './utils/FetchData';
 
 function App() {
   return (
