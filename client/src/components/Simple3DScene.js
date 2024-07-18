@@ -6,6 +6,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const Simple3DScene = () => {
   const containerRef = useRef(null);
+  // let animationId = null; // Declare animationId variable here
   // const isMouseDown = useRef(false); // Ref to track mouse button state
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const Simple3DScene = () => {
       side: THREE.DoubleSide
     });
     const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+    groundMesh.receiveShadow = true; // Allow ground to receive shadows
     scene.add(groundMesh);
 
     // Add sun light from above (spotlight)
@@ -61,28 +63,28 @@ const Simple3DScene = () => {
 
 
     // Create a coordinate frame (axes) at the origin
-    function createAxes() {
-      // X axis (red)
-      const xAxisMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
-      const xAxisGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0) ] );
-      const xAxis = new THREE.Line(xAxisGeometry, xAxisMaterial);
-      scene.add(xAxis);
+    // function createAxes() {
+    // X axis (red)
+    const xAxisMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+    const xAxisGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0) ] );
+    const xAxis = new THREE.Line(xAxisGeometry, xAxisMaterial);
+    scene.add(xAxis);
 
-      // Y axis (green)
-      const yAxisMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
-      const yAxisGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0) ] );
-      const yAxis = new THREE.Line(yAxisGeometry, yAxisMaterial);
-      scene.add(yAxis);
+    // Y axis (green)
+    const yAxisMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+    const yAxisGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0) ] );
+    const yAxis = new THREE.Line(yAxisGeometry, yAxisMaterial);
+    scene.add(yAxis);
 
-      // Z axis (blue)
-      const zAxisMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
-      const zAxisGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 1) ] );
-      const zAxis = new THREE.Line(zAxisGeometry, zAxisMaterial);
-      scene.add(zAxis);
-    }
+    // Z axis (blue)
+    const zAxisMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
+    const zAxisGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 1) ] );
+    const zAxis = new THREE.Line(zAxisGeometry, zAxisMaterial);
+    scene.add(zAxis);
+    // }
 
     // Call function to create coordinate frame
-    createAxes();
+    // createAxes();
 
 
 
@@ -99,15 +101,15 @@ const Simple3DScene = () => {
 
 
     // Cube
-    // const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-    // const cubeMaterial = new THREE.MeshBasicMaterial({ 
-    //   color: 0xC0C0C0
-    // });
-    // const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-    // cube.castShadow = true;
-    // cube.receiveShadow = true;
-    // cube.position.set(0, 3, -3);
-    // scene.add(cube);
+    const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+    const cubeMaterial = new THREE.MeshBasicMaterial({ 
+      color: 0xC0C0C0
+    });
+    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    cube.castShadow = true;
+    cube.receiveShadow = true;
+    cube.position.set(0, 3, -3);
+    scene.add(cube);
 
 
 
@@ -159,8 +161,34 @@ const Simple3DScene = () => {
       // window.removeEventListener('mousemove', handleMouseMove);
       // window.removeEventListener('mousedown', handleMouseDown);
       // window.removeEventListener('mouseup', handleMouseUp);
+      
+    
+
+      // Dispose of textures, render targets, renderer
+      
+      // containerRef.current.removeChild(renderer.domElement);
+      
+      // cancelAnimationFrame(animationId); // Stop animation loop
+      
+      scene.remove(cube);
+      scene.remove(spotlight);
+      scene.remove(groundMesh);
+      scene.remove(xAxis);
+      scene.remove(yAxis);
+      scene.remove(zAxis);
+
+      cubeGeometry.dispose();
+      cubeMaterial.dispose();
+      
+      controls.dispose();
       renderer.dispose();
-      // scene.remove(cube);
+
+      // cancelAnimationFrame(animationId); // Stop animation loop
+      // scene.remove(spotlight);
+      // scene.remove(groundMesh);
+      // scene.remove(xAxis);
+      // scene.remove(yAxis);
+      // scene.remove(zAxis);
     };
   }, []);
 
