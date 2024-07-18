@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-// import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const Simple3DScene = () => {
@@ -92,12 +92,12 @@ const Simple3DScene = () => {
 
 
     // Loading model
-    // const loader = new GLTFLoader().setPath('/models/free_1975_porsche_911_930_turbo/');
-    // loader.load( 'scene.gltf', (gltf) => {
-    //   const mesh = gltf.scene;
-    //   mesh.position.set(0, 0, 0);
-    //   scene.add(mesh);
-    // });
+    const loader = new GLTFLoader().setPath('/models/free_1975_porsche_911_930_turbo/');
+    loader.load( 'scene.gltf', (gltf) => {
+      const mesh = gltf.scene;
+      mesh.position.set(0, 0, 0);
+      scene.add(mesh);
+    });
 
 
     // Cube
@@ -166,6 +166,7 @@ const Simple3DScene = () => {
 
       // Dispose of textures, render targets, renderer
       
+      // containerRef.current.removeChild(renderer.domElement);
       
       // cancelAnimationFrame(animationId); // Stop animation loop
       
@@ -175,11 +176,10 @@ const Simple3DScene = () => {
       scene.remove(xAxis);
       scene.remove(yAxis);
       scene.remove(zAxis);
-      
+
       cubeGeometry.dispose();
       cubeMaterial.dispose();
       
-
       controls.dispose();
       renderer.dispose();
 
