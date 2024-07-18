@@ -17,7 +17,7 @@ class Cube extends THREE.Object3D {
         cube.castShadow = true;
         cube.receiveShadow = true;
 
-        cube.position.set(0, 3, -3);
+        cube.position.set(0, 10, -3);
 
         // Add the cube mesh to this Object3D
         this.add(cube);

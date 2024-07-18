@@ -18,7 +18,7 @@ class Terrain extends THREE.Object3D {
 
 
         // Position the terrain (optional)
-        terrain.position.y = -10; // Adjust as per your scene
+        terrain.position.y = 0; // Adjust as per your scene
 
         // Enable the terrain to receive shadows
         terrain.receiveShadow = true;
