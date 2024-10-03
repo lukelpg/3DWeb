@@ -1,94 +1,96 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
-// import Skybox from './scenes/skybox';
-import Terrain from './scenes/terrain';
-
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import Terrain from './scenes/terrain';
 import SpotLight from './lights/spotlight';
 import Cube from './objects/cube';
-import Model from './objects/model';
+// import Model from './objects/model';
 import Frame from './objects/coodFrame';
-
 
 const WorldScene = () => {
     const sceneRef = useRef(null);
+    const [blocks, setBlocks] = useState([]); // Track placed blocks
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
 
     useEffect(() => {
-        // Make World Scene
         const scene = new THREE.Scene();
-
-        // Set Up Camera
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500);
-        camera.position.set( 8, 10, 22 );
-        camera.lookAt( 0, 0, 0 );
+        camera.position.set(8, 10, 22);
+        camera.lookAt(0, 0, 0);
 
-        // Set Up Renderer
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000000); // for clearing screen to black before use
-        renderer.setPixelRatio(window.devicePixelRatio); // for appropeiate rendering on different devices
+        renderer.setClearColor(0x000000);
+        renderer.setPixelRatio(window.devicePixelRatio);
         renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap; // softer shadows
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         sceneRef.current.appendChild(renderer.domElement);
 
-        // Set up OrbitControls
         const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enablePan = true; // Enable panning (middle click and drag)
-        controls.update(); // Initial update of controls
+        controls.enablePan = true;
+        controls.update();
 
-
-        
-        // Setup skybox
-        // const skybox = new Skybox();
-        // scene.add(skybox);
-
-        // Setup terrain
         const terrain = new Terrain();
         scene.add(terrain);
 
-        // Add spotlight
         const spotLight = new SpotLight();
         scene.add(spotLight);
 
-        // Add global coodinate frame
         const coodFrame = new Frame();
         scene.add(coodFrame);
 
-        const cube = new Cube();
-        scene.add(cube);
+        const initialCube = new Cube();
+        scene.add(initialCube);
+        setBlocks([initialCube]); // Start with one block
 
-        const car = new Model();
-        scene.add(car);
+        // const car = new Model();
+        // scene.add(car);
 
-
-
-        // Animation Loop
         const animate = () => {
             requestAnimationFrame(animate);
             renderer.render(scene, camera);
         };
-    
         animate();
 
+        const onMouseClick = (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(scene.children.filter(child => child instanceof Cube));
+
+            if (intersects.length > 0) {
+                const intersect = intersects[0];
+                const newBlock = new Cube(); // Create a new cube
+
+                // Position it based on the face normal
+                newBlock.position.copy(intersect.point).add(intersect.face.normal);
+
+                // Optionally, adjust the position to ensure it aligns properly
+                newBlock.position.x = Math.round(newBlock.position.x);
+                newBlock.position.y = Math.round(newBlock.position.y);
+                newBlock.position.z = Math.round(newBlock.position.z);
+
+                scene.add(newBlock);
+                setBlocks(prevBlocks => [...prevBlocks, newBlock]); // Update state with new block
+            }
+        };
+
+        window.addEventListener('click', onMouseClick);
 
         return () => {
-
-            // Cleanup
-            // sceneRef.current.removeChild(renderer.domElement);
-
-            // scene.remove(skybox);
+            window.removeEventListener('click', onMouseClick);
             scene.remove(terrain);
             scene.remove(spotLight);
-            scene.remove(cube);
             scene.remove(coodFrame);
-
-            // skybox.dispose();
+            blocks.forEach(block => scene.remove(block));
             terrain.dispose();
             spotLight.dispose();
-            cube.dispose();
             coodFrame.dispose();
+            blocks.forEach(block => block.dispose());
         };
-    }, []);
+    }, []); // Removed blocks from the dependency array
 
     return <div ref={sceneRef} />;
 };
