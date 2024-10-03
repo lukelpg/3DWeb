@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import Terrain from './scenes/terrain';
 import SpotLight from './lights/spotlight';
 import Cube from './objects/cube';
-// import Model from './objects/model';
+import Model from './objects/model';
 import Frame from './objects/coodFrame';
 
 const WorldScene = () => {
@@ -64,13 +64,16 @@ const WorldScene = () => {
                 const intersect = intersects[0];
                 const newBlock = new Cube(); // Create a new cube
 
-                // Position it based on the face normal
-                newBlock.position.copy(intersect.point).add(intersect.face.normal);
+                // Assuming block size is 5 units
+                const size = 5; 
 
-                // Optionally, adjust the position to ensure it aligns properly
-                newBlock.position.x = Math.round(newBlock.position.x);
-                newBlock.position.y = Math.round(newBlock.position.y);
-                newBlock.position.z = Math.round(newBlock.position.z);
+                // Calculate the position based on the clicked face normal
+                newBlock.position.copy(intersect.point).add(intersect.face.normal.clone().multiplyScalar(size / 2));
+
+                // Align position to the grid
+                newBlock.position.x = Math.floor(newBlock.position.x / size) * size;
+                newBlock.position.y = Math.floor(newBlock.position.y / size) * size;
+                newBlock.position.z = Math.floor(newBlock.position.z / size) * size;
 
                 scene.add(newBlock);
                 setBlocks(prevBlocks => [...prevBlocks, newBlock]); // Update state with new block
@@ -90,7 +93,7 @@ const WorldScene = () => {
             coodFrame.dispose();
             blocks.forEach(block => block.dispose());
         };
-    }, []); // Removed blocks from the dependency array
+    }, []);
 
     return <div ref={sceneRef} />;
 };
