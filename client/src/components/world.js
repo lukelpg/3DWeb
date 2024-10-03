@@ -53,33 +53,61 @@ const WorldScene = () => {
         };
         animate();
 
+        const snapToGrid = (value, size) => {
+            return Math.round(value / size) * size;
+        };
+        
+        let lastBlockPosition = new THREE.Vector3(0, 0, 0); // To track the last block's position
+
         const onMouseClick = (event) => {
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
+        
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(scene.children.filter(child => child instanceof Cube));
-
+        
             if (intersects.length > 0) {
                 const intersect = intersects[0];
                 const newBlock = new Cube(); // Create a new cube
-
+        
                 // Assuming block size is 5 units
-                const size = 5; 
-
-                // Calculate the position based on the clicked face normal
-                newBlock.position.copy(intersect.point).add(intersect.face.normal.clone().multiplyScalar(size / 2));
-
-                // Align position to the grid
-                newBlock.position.x = Math.floor(newBlock.position.x / size) * size;
-                newBlock.position.y = Math.floor(newBlock.position.y / size) * size;
-                newBlock.position.z = Math.floor(newBlock.position.z / size) * size;
-
+                const size = 1;
+        
+                // Determine the new position relative to the last block
+                const newPosition = lastBlockPosition.clone();
+        
+                // Example: Click position determines the placement
+                // Here we use a simple input mechanism to define the direction
+                // You can replace this with your desired logic (e.g., button clicks or UI)
+                const faceNormal = intersect.face.normal.clone();
+        
+                // Adjust the new block position based on face normal
+                if (faceNormal.equals(new THREE.Vector3(0, 0, 1))) { // Front face
+                    newPosition.z += size; // Place in front
+                } else if (faceNormal.equals(new THREE.Vector3(0, 0, -1))) { // Back face
+                    newPosition.z -= size; // Place behind
+                } else if (faceNormal.equals(new THREE.Vector3(0, 1, 0))) { // Top face
+                    newPosition.y += size; // Place above
+                } else if (faceNormal.equals(new THREE.Vector3(0, -1, 0))) { // Bottom face
+                    newPosition.y -= size; // Place below
+                } else if (faceNormal.equals(new THREE.Vector3(1, 0, 0))) { // Right face
+                    newPosition.x += size; // Place to the right
+                } else if (faceNormal.equals(new THREE.Vector3(-1, 0, 0))) { // Left face
+                    newPosition.x -= size; // Place to the left
+                }
+        
+                // Set the position of the new block
+                newBlock.position.copy(newPosition);
+        
+                // Update lastBlockPosition to the position of the new block
+                lastBlockPosition.copy(newPosition);
+        
+                // Add the new block to the scene
                 scene.add(newBlock);
                 setBlocks(prevBlocks => [...prevBlocks, newBlock]); // Update state with new block
             }
         };
-
+        
         window.addEventListener('click', onMouseClick);
 
         return () => {
@@ -93,7 +121,7 @@ const WorldScene = () => {
             coodFrame.dispose();
             blocks.forEach(block => block.dispose());
         };
-    }, []);
+    }, []); // Keep track of blocks
 
     return <div ref={sceneRef} />;
 };

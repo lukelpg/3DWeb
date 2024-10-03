@@ -5,7 +5,7 @@ class Cube extends THREE.Object3D {
         super();
 
         // Create a box geometry
-        const geometry = new THREE.BoxGeometry(5, 5, 5);
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
 
         // Create a basic material and set its color
         const material = new THREE.MeshStandardMaterial({ color: 0xC0C0C0 });
@@ -17,7 +17,7 @@ class Cube extends THREE.Object3D {
         cube.castShadow = true;
         cube.receiveShadow = true;
 
-        cube.position.set(0, 10, -3);
+        cube.position.set(5, 5, 5);
 
         // Add the cube mesh to this Object3D
         this.add(cube);
