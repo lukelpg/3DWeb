@@ -11,28 +11,19 @@ class Cube extends THREE.Object3D {
         const material = new THREE.MeshStandardMaterial({ color: 0xC0C0C0 });
 
         // Create a mesh combining the geometry and material
-        const cube = new THREE.Mesh(geometry, material);
+        this.cubeMesh = new THREE.Mesh(geometry, material); // Store mesh in a property
 
-
-        cube.castShadow = true;
-        cube.receiveShadow = true;
-
-        cube.position.set(5, 5, 5);
+        this.cubeMesh.castShadow = true;
+        this.cubeMesh.receiveShadow = true;
 
         // Add the cube mesh to this Object3D
-        this.add(cube);
+        this.add(this.cubeMesh);
     }
 
     dispose() {
         // Dispose of the cube material and geometry
-        this.children.forEach(child => {
-            if (child.material) {
-                child.material.dispose();
-            }
-            if (child.geometry) {
-                child.geometry.dispose();
-            }
-        });
+        this.cubeMesh.material.dispose();
+        this.cubeMesh.geometry.dispose();
     }
 }
 
