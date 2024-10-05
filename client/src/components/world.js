@@ -42,7 +42,9 @@ const WorldScene = () => {
 
         const initialCube = new Cube();
         initialCube.position.set(5, 5, 5)
+        console.log(initialCube.position)
         const clickedBlockPosition = initialCube.position.clone()
+        console.log(clickedBlockPosition)
         scene.add(initialCube);
         setBlocks([initialCube]); // Start with one block
 
@@ -67,29 +69,22 @@ const WorldScene = () => {
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
         
             raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(scene.children.filter(child => child.cubeMesh)); // Use cubeMesh for intersection
+            const intersects = raycaster.intersectObjects(scene.children.filter(child => child.cubeMesh));
         
             if (intersects.length > 0) {
                 const intersect = intersects[0];
                 const newBlock = new Cube(); // Create a new cube
         
-                const clickedBlock = intersect.object.clone(); // Get the position of the clicked block
+                // Get the world position of the clicked block
+                const clickedBlock = intersect.object;
+                const worldPosition = new THREE.Vector3();
+                clickedBlock.getWorldPosition(worldPosition); // Get world position
         
-                console.log('Clicked Block Position:', clickedBlock.position.clone()); // 
-                console.log('Type of Clicked Block Position:', typeof clickedBlockPosition);
+                console.log('Clicked Block World Position:', worldPosition);
         
-                // Assuming block size is 5 units
-                const size = 1;
+                const size = 1; // Assuming block size is 1 unit
+                const newPosition = worldPosition.clone(); // Clone to avoid reference issues
         
-                // Determine the new position relative to the last block
-                const newPosition = clickedBlockPosition.clone();
-
-                // console.log('Last Block Position:', lastBlockPosition);
-                // console.log('Type of Last Block Position:', typeof lastBlockPosition);
-        
-                // Example: Click position determines the placement
-                // Here we use a simple input mechanism to define the direction
-                // You can replace this with your desired logic (e.g., button clicks or UI)
                 const faceNormal = intersect.face.normal.clone();
         
                 // Adjust the new block position based on face normal
@@ -110,14 +105,12 @@ const WorldScene = () => {
                 // Set the position of the new block
                 newBlock.position.copy(newPosition);
         
-                // Update lastBlockPosition to the position of the new block
-                // lastBlockPosition.copy(newPosition);
-        
                 // Add the new block to the scene
                 scene.add(newBlock);
                 setBlocks(prevBlocks => [...prevBlocks, newBlock]); // Update state with new block
             }
         };
+        
         
         window.addEventListener('click', onMouseClick);
 
