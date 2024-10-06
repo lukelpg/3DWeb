@@ -104,40 +104,32 @@ const WorldScene = () => {
                     const clickedBlock = intersects[0].object; // The block that was clicked
                     const worldPosition = new THREE.Vector3();
                     clickedBlock.getWorldPosition(worldPosition); // Get the world position of the clicked block
-
-                    // Find the block in the state that matches the clicked position
-                    const blockToRemove = blocks.find(block => {
-                        const blockPosition = new THREE.Vector3();
-                        block.getWorldPosition(blockPosition);
-                        // Check if the position is approximately equal
-                        return blockPosition.equals(worldPosition);
-                    });
-
-                    if (blockToRemove) {
-                        console.log('Removing block:', blockToRemove);
-                        scene.remove(blockToRemove);
-
-                        // Update state to remove the block from blocks array
-                        setBlocks(prevBlocks => {
+        
+                    // Use the previous state to find the block
+                    setBlocks(prevBlocks => {
+                        // Log the current state before removal
+                        console.log('Current blocks before removal:', prevBlocks);
+                        
+                        const blockToRemove = prevBlocks.find(block => {
+                            const blockPosition = new THREE.Vector3();
+                            block.getWorldPosition(blockPosition);
+                            // Check if the position is approximately equal
+                            return blockPosition.equals(worldPosition);
+                        });
+        
+                        if (blockToRemove) {
+                            console.log('Removing block:', blockToRemove);
+                            scene.remove(blockToRemove);
+        
+                            // Return the updated blocks array
                             const updatedBlocks = prevBlocks.filter(block => block !== blockToRemove);
                             console.log('Updated blocks after removal:', updatedBlocks); // Log the updated blocks
                             return updatedBlocks; // Return the new state
-                        });
-
-                        // Dispose geometry and materials
-                        if (blockToRemove.geometry) {
-                            blockToRemove.geometry.dispose();
+                        } else {
+                            console.log('No block found at the clicked position.');
+                            return prevBlocks; // Return the existing state if no block is found
                         }
-                        if (blockToRemove.material) {
-                            if (Array.isArray(blockToRemove.material)) {
-                                blockToRemove.material.forEach(mat => mat.dispose());
-                            } else {
-                                blockToRemove.material.dispose();
-                            }
-                        }
-                    } else {
-                        console.log('No block found at the clicked position.');
-                    }
+                    });
                 }
             }
         };
