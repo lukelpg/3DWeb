@@ -6,6 +6,8 @@ import SpotLight from './lights/spotlight';
 import Cube from './objects/cube';
 import Frame from './objects/coodFrame';
 
+import { STLExporter } from 'three/examples/jsm/exporters/STLExporter.js';
+
 const WorldScene = () => {
     const sceneRef = useRef(null);
     const [blocks, setBlocks] = useState([]); // Track placed blocks
@@ -27,6 +29,8 @@ const WorldScene = () => {
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         sceneRef.current.appendChild(renderer.domElement);
 
+        const exporter = new STLExporter();
+
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enablePan = true;
         controls.update();
@@ -43,8 +47,34 @@ const WorldScene = () => {
         const initialCube = new Cube();
         initialCube.position.set(5, 5, 5);
         initialCube.userData = { type: 'cube' }; // Ensure userData is set
+        initialCube.name = 'initialCube'
         scene.add(initialCube);
         setBlocks([initialCube]); // Start with one block
+
+
+
+        // Get the object you want to export
+        const objectToExport = scene.getObjectByName('initialCube'); // Replace with your object's name
+
+        // // Export the object
+        if (!objectToExport) {
+            console.error('Object not found in the scene.');
+        } else {
+            const stlString = exporter.parse(objectToExport);
+            // Continue with the export process...
+            // Download the STL file
+            const blob = new Blob([stlString], { type: 'application/sla' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'model.stl';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        
+
+
 
         const animate = () => {
             requestAnimationFrame(animate);
