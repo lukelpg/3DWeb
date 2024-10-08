@@ -66,10 +66,10 @@ const WorldScene = () => {
             const blob = new Blob([stlString], { type: 'application/sla' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = 'model.stl';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // link.download = 'model.stl';
+            // document.body.appendChild(link);
+            // link.click();
+            // document.body.removeChild(link);
         }
 
         
