@@ -12,5 +12,5 @@ Installed express
 - node server.js
 
 ### To Run Frontend
-- From ./3DWeb run the following
+- From ./client run the following
 - npm start
