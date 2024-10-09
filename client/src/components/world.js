@@ -29,7 +29,6 @@ const WorldScene = () => {
             // Clean up the scene
             blocks.forEach(block => scene.remove(block));
         };
-
         
     }, []); // Empty dependency array to run once
 
