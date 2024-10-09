@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import Cube from '../objects/cube';
 
-const handleMouseClick = (event, scene, camera, setBlocks, raycaster) => {
+const handleMouseClick = (event, scene, camera, setBlocks, raycaster, isGrouping, currentGroup) => {
     const mouse = new THREE.Vector2();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -34,6 +34,11 @@ const handleMouseClick = (event, scene, camera, setBlocks, raycaster) => {
             scene.add(newBlock);
 
             setBlocks(prevBlocks => [...prevBlocks, newBlock]);
+
+            // Add to current group if in grouping mode
+            if (isGrouping && currentGroup) {
+                currentGroup.add(newBlock);
+            }
         }
     } else if (event.button === 2) { // Right click
         if (intersects.length > 0) {
@@ -50,6 +55,9 @@ const handleMouseClick = (event, scene, camera, setBlocks, raycaster) => {
 
                 if (blockToRemove) {
                     scene.remove(blockToRemove);
+                    if (currentGroup && currentGroup.children.includes(blockToRemove)) {
+                        currentGroup.remove(blockToRemove); // Remove from group if applicable
+                    }
                     return prevBlocks.filter(block => block !== blockToRemove);
                 }
                 return prevBlocks;
