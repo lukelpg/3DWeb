@@ -20,15 +20,23 @@ const initializeScene = (sceneRef, setBlocks) => {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     sceneRef.current.appendChild(renderer.domElement);
 
+    // Add Terrain
     const terrain = new Terrain();
     scene.add(terrain);
 
+    // Add SpotLight
     const spotLight = new SpotLight();
     scene.add(spotLight);
 
+    // Add Ambient Light
+    const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft white light
+    scene.add(ambientLight);
+
+    // Add Coordinate Frame
     const coodFrame = new Frame();
     scene.add(coodFrame);
 
+    // Add Initial Cube
     const initialCube = new Cube();
     initialCube.position.set(5, 5, 5);
     initialCube.userData = { type: 'cube' };
@@ -36,6 +44,7 @@ const initializeScene = (sceneRef, setBlocks) => {
     scene.add(initialCube);
     setBlocks([initialCube]);
 
+    // Set up OrbitControls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = true;
     controls.update();
