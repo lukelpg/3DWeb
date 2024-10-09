@@ -1,4 +1,3 @@
-// src/components/MouseEvents.js
 import * as THREE from 'three';
 import Cube from '../objects/cube';
 
@@ -13,7 +12,6 @@ const handleMouseClick = (event, scene, camera, setBlocks, raycaster, isGrouping
     if (event.button === 0) { // Left click
         if (intersects.length > 0) {
             const intersect = intersects[0];
-            const newBlock = new Cube();
             const clickedBlock = intersect.object;
             const worldPosition = new THREE.Vector3();
             clickedBlock.getWorldPosition(worldPosition);
@@ -30,12 +28,16 @@ const handleMouseClick = (event, scene, camera, setBlocks, raycaster, isGrouping
             else if (faceNormal.equals(new THREE.Vector3(1, 0, 0))) newPosition.x += size;
             else if (faceNormal.equals(new THREE.Vector3(-1, 0, 0))) newPosition.x -= size;
 
+            console.log(isGrouping)
+
+            const newBlockColor = isGrouping && currentGroup ? currentGroup.userData.color : 0xff00ff;
+            const newBlock = new Cube(newBlockColor);
+
             newBlock.position.copy(newPosition);
             scene.add(newBlock);
-
             setBlocks(prevBlocks => [...prevBlocks, newBlock]);
 
-            // Add to current group if in grouping mode
+            // Add the new block to the current group if grouping is active
             if (isGrouping && currentGroup) {
                 currentGroup.add(newBlock);
             }
@@ -56,7 +58,7 @@ const handleMouseClick = (event, scene, camera, setBlocks, raycaster, isGrouping
                 if (blockToRemove) {
                     scene.remove(blockToRemove);
                     if (currentGroup && currentGroup.children.includes(blockToRemove)) {
-                        currentGroup.remove(blockToRemove); // Remove from group if applicable
+                        currentGroup.remove(blockToRemove);
                     }
                     return prevBlocks.filter(block => block !== blockToRemove);
                 }

@@ -1,20 +1,24 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import initializeScene from './scenes/sceneInitializer';
 import handleMouseClick from './controls/mouseEvents';
-import exportObject from './controls/objectExporter';
 
 const WorldScene = () => {
     const sceneRef = useRef(null);
-    const sceneInstance = useRef(null); // Ref to store the scene instance
+    const sceneInstance = useRef(null);
+    const cameraRef = useRef(null);
     const [blocks, setBlocks] = useState([]);
     const [isGrouping, setIsGrouping] = useState(false);
     const [currentGroup, setCurrentGroup] = useState(null);
+    const [groups, setGroups] = useState([]); // Make sure this is defined
     const raycaster = new THREE.Raycaster();
+    const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
+    const [groupColorIndex, setGroupColorIndex] = useState(0);
 
     useEffect(() => {
         const { scene, camera, renderer } = initializeScene(sceneRef, setBlocks);
-        sceneInstance.current = scene; // Store the scene in the ref
+        sceneInstance.current = scene;
+        cameraRef.current = camera;
 
         const animate = () => {
             requestAnimationFrame(animate);
@@ -22,40 +26,80 @@ const WorldScene = () => {
         };
         animate();
 
-        const onMouseClick = (event) => handleMouseClick(event, scene, camera, setBlocks, raycaster, isGrouping, currentGroup);
         window.addEventListener('contextmenu', (e) => e.preventDefault());
-        window.addEventListener('mousedown', onMouseClick);
-
         return () => {
             window.removeEventListener('contextmenu', (e) => e.preventDefault());
-            window.removeEventListener('mousedown', onMouseClick);
             blocks.forEach(block => scene.remove(block));
             if (currentGroup) {
-                scene.remove(currentGroup); // Remove the current group when unmounted
+                scene.remove(currentGroup);
             }
         };
-        
     }, []);
+
+    const onMouseClick = useCallback((event) => {
+        const camera = cameraRef.current;
+        handleMouseClick(event, sceneInstance.current, camera, setBlocks, raycaster, isGrouping, currentGroup);
+    }, [isGrouping, currentGroup]);
+
+    useEffect(() => {
+        window.addEventListener('mousedown', onMouseClick);
+        return () => {
+            window.removeEventListener('mousedown', onMouseClick);
+        };
+    }, [onMouseClick]);
 
     const startGrouping = () => {
         if (!currentGroup) {
             const group = new THREE.Group();
-            sceneInstance.current.add(group); // Use the scene from the ref
+            sceneInstance.current.add(group);
+    
+            // Ensure this line is executed
+            group.userData.color = colors[groupColorIndex % colors.length]; 
+            setGroupColorIndex(prev => prev + 1);
             setCurrentGroup(group);
+    
+            // Add the group to the state
+            setGroups(prev => {
+                const updatedGroups = [...prev, group];
+                console.log("Updated Groups:", updatedGroups);
+                return updatedGroups;
+            });
+    
             setIsGrouping(true);
         }
     };
+    
 
     const doneGrouping = () => {
         setIsGrouping(false);
         setCurrentGroup(null);
     };
+    
+
+    const logGroups = () => {
+        console.log("Current Groups:", groups);
+        groups.forEach((group, index) => {
+            if (group && group.userData && group.userData.color !== undefined) {
+                const blockPositions = [];
+                group.children.forEach(block => {
+                    const worldPosition = new THREE.Vector3();
+                    block.getWorldPosition(worldPosition);
+                    blockPositions.push({ x: worldPosition.x, y: worldPosition.y, z: worldPosition.z });
+                });
+                console.log(`Group ${index + 1}: Color: ${group.userData.color.toString(16)}, Positions:`, blockPositions);
+            } else {
+                console.log(`Group ${index + 1} is missing color data.`);
+            }
+        });
+    };
+    
 
     return (
         <div>
             <div ref={sceneRef} />
             <button onClick={startGrouping}>New Piece</button>
             <button onClick={doneGrouping} disabled={!isGrouping}>Done Piece</button>
+            <button onClick={logGroups}>Log Groups</button>
         </div>
     );
 };

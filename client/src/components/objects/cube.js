@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 
 class Cube extends THREE.Object3D {
-    constructor() {
+    constructor(color = 0xff00ff) { // Default color
         super();
 
         // Create a box geometry
         const geometry = new THREE.BoxGeometry(1, 1, 1);
 
         // Create a basic material and set its color
-        const material = new THREE.MeshStandardMaterial({ color: 0xC0C0C0 });
+        const material = new THREE.MeshStandardMaterial({ color });
 
         // Create a mesh combining the geometry and material
         this.cubeMesh = new THREE.Mesh(geometry, material); // Store mesh in a property
@@ -30,3 +30,4 @@ class Cube extends THREE.Object3D {
 }
 
 export default Cube;
+
