@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import initializeScene from './scenes/sceneInitializer';
 import handleMouseClick from './controls/mouseEvents';
+import { STLExporter } from 'three/examples/jsm/exporters/STLExporter.js';
 
 const WorldScene = () => {
     const sceneRef = useRef(null);
@@ -10,7 +11,7 @@ const WorldScene = () => {
     const [blocks, setBlocks] = useState([]);
     const [isGrouping, setIsGrouping] = useState(false);
     const [currentGroup, setCurrentGroup] = useState(null);
-    const [groups, setGroups] = useState([]); // Make sure this is defined
+    const [groups, setGroups] = useState([]);
     const raycaster = new THREE.Raycaster();
     const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
     const [groupColorIndex, setGroupColorIndex] = useState(0);
@@ -52,29 +53,33 @@ const WorldScene = () => {
         if (!currentGroup) {
             const group = new THREE.Group();
             sceneInstance.current.add(group);
-    
-            // Ensure this line is executed
-            group.userData.color = colors[groupColorIndex % colors.length]; 
+            group.userData.color = colors[groupColorIndex % colors.length];
             setGroupColorIndex(prev => prev + 1);
             setCurrentGroup(group);
-    
-            // Add the group to the state
-            setGroups(prev => {
-                const updatedGroups = [...prev, group];
-                console.log("Updated Groups:", updatedGroups);
-                return updatedGroups;
-            });
-    
+            setGroups(prev => [...prev, group]);
             setIsGrouping(true);
         }
     };
-    
+
+    const exportGroupToSTL = (group) => {
+        const exporter = new STLExporter();
+        const stlString = exporter.parse(group);
+        
+        const blob = new Blob([stlString], { type: 'application/vnd.ms-pki.stl' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'group.stl';
+        link.click();
+        URL.revokeObjectURL(link.href);
+    };
 
     const doneGrouping = () => {
+        if (currentGroup) {
+            exportGroupToSTL(currentGroup);
+        }
         setIsGrouping(false);
         setCurrentGroup(null);
     };
-    
 
     const logGroups = () => {
         console.log("Current Groups:", groups);
@@ -92,7 +97,6 @@ const WorldScene = () => {
             }
         });
     };
-    
 
     return (
         <div>
