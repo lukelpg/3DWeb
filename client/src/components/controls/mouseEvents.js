@@ -7,7 +7,16 @@ const handleMouseClick = (event, scene, camera, setBlocks, raycaster, isGrouping
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(scene.children.filter(child => child.cubeMesh));
+
+    // Include blocks from groups in intersection checks
+    const intersectableObjects = scene.children.flatMap(child => {
+        if (child instanceof THREE.Group) {
+            return child.children.filter(c => c.cubeMesh);
+        }
+        return child.cubeMesh ? [child] : [];
+    });
+
+    const intersects = raycaster.intersectObjects(intersectableObjects);
 
     if (event.button === 0) { // Left click
         if (intersects.length > 0) {
@@ -27,8 +36,6 @@ const handleMouseClick = (event, scene, camera, setBlocks, raycaster, isGrouping
             else if (faceNormal.equals(new THREE.Vector3(0, -1, 0))) newPosition.y -= size;
             else if (faceNormal.equals(new THREE.Vector3(1, 0, 0))) newPosition.x += size;
             else if (faceNormal.equals(new THREE.Vector3(-1, 0, 0))) newPosition.x -= size;
-
-            console.log(isGrouping)
 
             const newBlockColor = isGrouping && currentGroup ? currentGroup.userData.color : 0xff00ff;
             const newBlock = new Cube(newBlockColor);
@@ -57,7 +64,11 @@ const handleMouseClick = (event, scene, camera, setBlocks, raycaster, isGrouping
 
                 if (blockToRemove) {
                     scene.remove(blockToRemove);
+                    console.log(`Attempting to remove ${blockToRemove.name} from the scene.`);
+
+                    // Check if the block is in the current group
                     if (currentGroup && currentGroup.children.includes(blockToRemove)) {
+                        console.log(`Removing ${blockToRemove.name} from current group.`);
                         currentGroup.remove(blockToRemove);
                     }
                     return prevBlocks.filter(block => block !== blockToRemove);

@@ -17,7 +17,7 @@ class Cube extends THREE.Object3D {
         this.cubeMesh.receiveShadow = true;
 
         this.userData.type = 'cube';
-
+        
         // Add the cube mesh to this Object3D
         this.add(this.cubeMesh);
     }
