@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 class Cube extends THREE.Object3D {
-    constructor(color = 0xff00ff) { // Default color
+    constructor(color = 0x808080) { // Default color
         super();
 
         // Create a box geometry
@@ -17,6 +17,14 @@ class Cube extends THREE.Object3D {
         this.cubeMesh.receiveShadow = true;
 
         this.userData.type = 'cube';
+
+        // OUTLINE CAUSES MAJOR ERROR
+        // Create outline 
+        // const edges = new THREE.EdgesGeometry(geometry);
+        // const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff }); // Outline color
+        // const outline = new THREE.LineSegments(edges, lineMaterial);
+        // outline.renderOrder = 1; // Ensure outline is rendered on top
+        // this.add(outline);
         
         // Add the cube mesh to this Object3D
         this.add(this.cubeMesh);
