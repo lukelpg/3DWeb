@@ -10,7 +10,7 @@ class Terrain extends THREE.Object3D {
         
         // Create material (e.g., basic material)
         const material = new THREE.MeshStandardMaterial({ 
-            color: 0xffffff, 
+            color: 0xff00ff, 
             // wireframe: true 
         });
 
