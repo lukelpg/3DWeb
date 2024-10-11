@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './App.css'; // Optional CSS file for styling
 
 import HomeMenu from './components/UI/homeMenu';
-import Toolbar from './components/toolBar';
 import WorldScene  from './components/world';
 // import FetchData from './utils/FetchData';
 
