@@ -1,7 +1,7 @@
 // src/components/Toolbar.js
 import React from 'react';
 
-const Toolbar = ({ onAction1, onAction2 }) => {
+const Toolbar = ({ startGrouping, doneGrouping, exportPieces }) => {
     const toolbarStyle = {
         position: 'fixed', // Keep fixed positioning
         top: 0,
@@ -29,8 +29,9 @@ const Toolbar = ({ onAction1, onAction2 }) => {
         <div style={toolbarStyle}>
             <div style={titleStyle}>3D Web</div> {/* Title on the left */}
             <div style={buttonContainerStyle}>
-                <button onClick={onAction1} style={buttonStyle}>Action 1</button>
-                <button onClick={onAction2} style={buttonStyle}>Action 2</button>
+                <button onClick={startGrouping} style={buttonStyle}>New Piece</button>
+                <button onClick={doneGrouping} style={buttonStyle}>Done Piece</button>
+                <button onClick={exportPieces} style={buttonStyle}>Export Pieces</button>
             </div>
         </div>
     );

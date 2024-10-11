@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import initializeScene from './scenes/sceneInitializer';
 import handleMouseClick from './controls/mouseEvents';
 import { STLExporter } from 'three/examples/jsm/exporters/STLExporter.js';
+import Toolbar from './toolBar'; // Import the Toolbar component
 
 const WorldScene = () => {
     const sceneRef = useRef(null);
@@ -100,10 +101,12 @@ const WorldScene = () => {
 
     return (
         <div>
+            <Toolbar 
+                startGrouping={startGrouping} 
+                doneGrouping={doneGrouping} 
+                exportPieces={logGroups}
+            />
             <div ref={sceneRef} />
-            <button onClick={startGrouping}>New Piece</button>
-            <button onClick={doneGrouping} disabled={!isGrouping}>Done Piece</button>
-            <button onClick={logGroups}>Log Groups</button>
         </div>
     );
 };
