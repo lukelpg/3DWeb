@@ -62,21 +62,21 @@ const WorldScene = () => {
         }
     };
 
-    const exportGroupToSTL = (group) => {
+    const exportGroupToSTL = (group, index) => {
         const exporter = new STLExporter();
-        const stlString = exporter.parse(group);
+        const stlString = exporter.parse(group.clone()); // Clone to avoid modifying the original group
         
         const blob = new Blob([stlString], { type: 'application/vnd.ms-pki.stl' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = 'group.stl';
+        link.download = `group_${index + 1}.stl`; // Name each file separately
         link.click();
         URL.revokeObjectURL(link.href);
     };
 
     const doneGrouping = () => {
         if (currentGroup) {
-            exportGroupToSTL(currentGroup);
+            // Optionally export the current group if desired
         }
         setIsGrouping(false);
         setCurrentGroup(null);
@@ -93,6 +93,21 @@ const WorldScene = () => {
                     blockPositions.push({ x: worldPosition.x, y: worldPosition.y, z: worldPosition.z });
                 });
                 console.log(`Group ${index + 1}: Color: ${group.userData.color.toString(16)}, Positions:`, blockPositions);
+                
+                // Create a new group for export
+                const exportGroup = new THREE.Group();
+    
+                // Add only the blocks to the export group
+                group.children.forEach(block => {
+                    const blockClone = block.clone();
+                    exportGroup.add(blockClone);
+                });
+    
+                // Set the position of the export group to the group's position
+                exportGroup.position.copy(group.position);
+    
+                // Export the new group that only contains blocks
+                exportGroupToSTL(exportGroup, index);
             } else {
                 console.log(`Group ${index + 1} is missing color data.`);
             }
