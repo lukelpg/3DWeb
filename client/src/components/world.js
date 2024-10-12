@@ -64,6 +64,7 @@ const WorldScene = () => {
 
     const exportGroupToSTL = (group, index) => {
         const exporter = new STLExporter();
+        console.log(group)
         const stlString = exporter.parse(group.clone()); // Clone to avoid modifying the original group
         
         const blob = new Blob([stlString], { type: 'application/vnd.ms-pki.stl' });
@@ -76,7 +77,7 @@ const WorldScene = () => {
 
     const doneGrouping = () => {
         if (currentGroup) {
-            // Optionally export the current group if desired
+            // exportGroupToSTL(currentGroup, 0)
         }
         setIsGrouping(false);
         setCurrentGroup(null);
@@ -91,20 +92,25 @@ const WorldScene = () => {
                     const worldPosition = new THREE.Vector3();
                     block.getWorldPosition(worldPosition);
                     blockPositions.push({ x: worldPosition.x, y: worldPosition.y, z: worldPosition.z });
+                    console.log(`Block Position: ${worldPosition}`); // Log block positions
                 });
                 console.log(`Group ${index + 1}: Color: ${group.userData.color.toString(16)}, Positions:`, blockPositions);
                 
                 // Create a new group for export
                 const exportGroup = new THREE.Group();
     
-                // Add only the blocks to the export group
+                // Add only the blocks to the export group, resetting their positions
                 group.children.forEach(block => {
                     const blockClone = block.clone();
+                    blockClone.position.set(0, 0, 0); // Reset position to origin
                     exportGroup.add(blockClone);
                 });
     
-                // Set the position of the export group to the group's position
-                exportGroup.position.copy(group.position);
+                // Optionally, set the position of the export group
+                // exportGroup.position.copy(group.position); // Uncomment if you want to retain group position
+    
+                console.log(index);
+                console.log(exportGroup);
     
                 // Export the new group that only contains blocks
                 exportGroupToSTL(exportGroup, index);
@@ -113,6 +119,7 @@ const WorldScene = () => {
             }
         });
     };
+    
 
     return (
         <div>
