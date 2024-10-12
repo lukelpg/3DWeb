@@ -10,7 +10,7 @@ class Terrain extends THREE.Object3D {
         
         // Create material (e.g., basic material)
         const material = new THREE.MeshStandardMaterial({ 
-            color: 0xff00ff, 
+            color: 0x808080, 
             // wireframe: true 
         });
 
@@ -18,7 +18,7 @@ class Terrain extends THREE.Object3D {
 
 
         // Position the terrain (optional)
-        terrain.position.y = 0; // Adjust as per your scene
+        terrain.position.y = -0.5; // Adjust as per your scene
 
         // Enable the terrain to receive shadows
         terrain.receiveShadow = true;
