@@ -7,12 +7,13 @@ const HomeMenu = ({ onStart, onSettings, onExit }) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Adjust opacity
         padding: '20px',
         borderRadius: '10px',
-        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5)',
         zIndex: 1000,
     };
+    
 
     const buttonStyle = {
         margin: '10px 0',
