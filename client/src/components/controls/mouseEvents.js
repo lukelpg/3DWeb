@@ -38,7 +38,10 @@ const handleMouseClick = (event, scene, camera, setBlocks, raycaster, isGrouping
             else if (faceNormal.equals(new THREE.Vector3(-1, 0, 0))) newPosition.x -= size;
 
             const newBlockColor = isGrouping && currentGroup ? currentGroup.userData.color : 0x808080;
+
             const newBlock = new Cube(newBlockColor);
+            const finalPosition = newPosition.clone().sub(currentGroup.position); // Adjust for group's position
+            newBlock.position.copy(finalPosition);
 
             newBlock.position.copy(newPosition);
             scene.add(newBlock);

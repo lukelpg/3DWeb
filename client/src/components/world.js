@@ -64,13 +64,11 @@ const WorldScene = () => {
 
     const exportGroupToSTL = (group, index) => {
         const exporter = new STLExporter();
-        console.log(group)
-        const stlString = exporter.parse(group.clone()); // Clone to avoid modifying the original group
-        
-        const blob = new Blob([stlString], { type: 'application/vnd.ms-pki.stl' });
+        const stlString = exporter.parse(group);
+        const blob = new Blob([stlString], { type: 'text/plain' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `group_${index + 1}.stl`; // Name each file separately
+        link.download = `piece_${index + 1}.stl`;
         link.click();
         URL.revokeObjectURL(link.href);
     };
@@ -87,33 +85,7 @@ const WorldScene = () => {
         console.log("Current Groups:", groups);
         groups.forEach((group, index) => {
             if (group && group.userData && group.userData.color !== undefined) {
-                const blockPositions = [];
-                group.children.forEach(block => {
-                    const worldPosition = new THREE.Vector3();
-                    block.getWorldPosition(worldPosition);
-                    blockPositions.push({ x: worldPosition.x, y: worldPosition.y, z: worldPosition.z });
-                    console.log(`Block Position: ${worldPosition}`); // Log block positions
-                });
-                console.log(`Group ${index + 1}: Color: ${group.userData.color.toString(16)}, Positions:`, blockPositions);
-                
-                // Create a new group for export
-                const exportGroup = new THREE.Group();
-    
-                // Add only the blocks to the export group, resetting their positions
-                group.children.forEach(block => {
-                    const blockClone = block.clone();
-                    blockClone.position.set(0, 0, 0); // Reset position to origin
-                    exportGroup.add(blockClone);
-                });
-    
-                // Optionally, set the position of the export group
-                // exportGroup.position.copy(group.position); // Uncomment if you want to retain group position
-    
-                console.log(index);
-                console.log(exportGroup);
-    
-                // Export the new group that only contains blocks
-                exportGroupToSTL(exportGroup, index);
+                exportGroupToSTL(group, index);
             } else {
                 console.log(`Group ${index + 1} is missing color data.`);
             }
