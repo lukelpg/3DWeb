@@ -8,7 +8,6 @@ const handleMouseClick = (event, scene, camera, setBlocks, raycaster, isGrouping
 
     raycaster.setFromCamera(mouse, camera);
 
-    // Include blocks from groups in intersection checks
     const intersectableObjects = scene.children.flatMap(child => {
         if (child instanceof THREE.Group) {
             return child.children.filter(c => c.cubeMesh);
@@ -37,17 +36,15 @@ const handleMouseClick = (event, scene, camera, setBlocks, raycaster, isGrouping
             else if (faceNormal.equals(new THREE.Vector3(1, 0, 0))) newPosition.x += size;
             else if (faceNormal.equals(new THREE.Vector3(-1, 0, 0))) newPosition.x -= size;
 
+            // Default block color when not grouping or currentGroup is null
             const newBlockColor = isGrouping && currentGroup ? currentGroup.userData.color : 0x808080;
 
             const newBlock = new Cube(newBlockColor);
-            const finalPosition = newPosition.clone().sub(currentGroup.position); // Adjust for group's position
-            newBlock.position.copy(finalPosition);
-
             newBlock.position.copy(newPosition);
             scene.add(newBlock);
             setBlocks(prevBlocks => [...prevBlocks, newBlock]);
 
-            // Add the new block to the current group if grouping is active
+            // Only add the new block to the current group if grouping is active
             if (isGrouping && currentGroup) {
                 currentGroup.add(newBlock);
             }
